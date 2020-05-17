@@ -68,32 +68,5 @@ void printList(List* head)
 
 void rearrangeList(List** head, List** begin, List** end)
 {
-    List* tempPointer = *begin;
-    int tempValue1 = tempPointer->next->value;
-    int tempValue2 = tempPointer->next->next->value;
 
-    for (int i = 1; i <= n/2; i++)
-    {
-        if (i != 1)
-        {
-            tempValue1 = tempPointer->next->next->value;
-        }
-
-        tempPointer = tempPointer->next;
-
-        if (i != 1)
-        {
-            tempValue2 = tempPointer->next->next->value;
-        }
-
-        for (int j = 1; j <= n; j++)
-        {
-            *head = (*head)->next;
-        }
-
-        tempPointer->value = (*head)->value;
-        tempPointer->next->value = tempValue1;
-        (*head)->value = tempValue2;
-        (*head) = tempPointer;
-    }
 }
