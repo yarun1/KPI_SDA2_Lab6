@@ -1,72 +1,105 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 
-typedef struct List
+//Doubly linked list
+typedef struct NodeList
 {
     int value;
-    struct List* next;
-}List;
+    struct NodeList* next;
+    struct NodeList* previous;
+}NodeList;
 
-void fillList(List** head, List** begin, List** end);
-void push(List** head, int value);
-void printList(List* head);
-void rearrangeList(List** head, List** begin, List** end);
-
-int n;
+void push(NodeList** head, NodeList** tail, int value);
+NodeList* findByIndex(NodeList* head, int index);
+void fillList(NodeList** head, NodeList** tail, int size);
+void rearrangeList(NodeList* head, int n);
+void printList(NodeList* head, int size);
 
 int main()
 {
-    List* head = NULL;
-    List* begin = NULL;
-    List* end = NULL;
+    NodeList* head = NULL;
+    NodeList* tail = NULL;
+    int n, size;
 
     printf("\nWELCOME TO THE PROGRAM\n");
-    fillList(&head, &begin, &end);
-
-    printf("Original list: ");
-    printList(head);
-
-    rearrangeList(&head, &begin, &end);
-}
-
-void fillList(List** head, List** begin, List** end)
-{
     printf("Input n: ");
     scanf("%d", &n);
-    printf("\n");
 
-    push(head, 2*n);
-    *end = &(**head);
+    size = 2*n;
 
-    for (int i = 2*n-1; i > 0; i--)
-    {
-        push(head, i);
-    }
+    fillList(&head, &tail, size);
+    printf("An origin list: ");
+    printList(head, size);
 
-    *begin = &(**head);
+    rearrangeList(head, n);
+    printf("The rearrange list: ");
+    printList(head, size);
 }
 
-void push(List** head, int value)
+void push(NodeList** head, NodeList** tail, int value)
 {
-    List* temp = malloc(sizeof(List));
+    NodeList* temp = malloc(sizeof(NodeList));
 
     temp->value = value;
-    temp->next = *head;
-    *head = temp;
+    temp->next = NULL;
+    temp->previous = *tail;
+
+    if (*tail != NULL)
+    {
+        (*tail)->next = temp;
+    }
+
+    *tail = temp;
+
+    if (*head == NULL)
+    {
+        *head = temp;
+    }
 }
 
-void printList(List* head)
+NodeList* findByIndex(NodeList* head, int index)
 {
-    while (head != NULL)
+    for (int i = 0; i < index; i++)
+    {
+        head = head->next;
+    }
+
+    return head;
+}
+
+void fillList(NodeList** head, NodeList** tail, int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        push(head, tail, i);
+    }
+}
+
+void rearrangeList(NodeList* head, int n)
+{
+    NodeList* currentNodeFromMiddle = findByIndex(head, n);
+
+    for (int i = 0; i < n; i++)
+    {
+        NodeList* next = head->next;
+        NodeList* nextFromMiddle = currentNodeFromMiddle->next;
+
+        head->next = currentNodeFromMiddle;
+        currentNodeFromMiddle->next = next;
+        currentNodeFromMiddle->previous = head->previous;
+
+        head = next;
+        currentNodeFromMiddle = nextFromMiddle;
+    }
+}
+
+void printList(NodeList* head, int size)
+{
+    for (int i = 0; i < size; i++)
     {
         printf("%d ", head->value);
         head = head->next;
     }
 
     printf("\n");
-}
-
-void rearrangeList(List** head, List** begin, List** end)
-{
-
 }
